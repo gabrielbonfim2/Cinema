@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Cadastro de Filmes</title>
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+  <!-- 🔝 MENU -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+      <a class="navbar-brand" href="index.html">🎬 Cinema</a>
+
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="cadastro-filmes.html">Filmes</a></li>
+        <li class="nav-item"><a class="nav-link" href="cadastro-salas.html">Salas</a></li>
+        <li class="nav-item"><a class="nav-link" href="cadastro-sessoes.html">Sessões</a></li>
+        <li class="nav-item"><a class="nav-link" href="venda-ingressos.html">Ingressos</a></li>
+        <li class="nav-item"><a class="nav-link" href="sessoes.html">Listagem</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- 📋 FORMULÁRIO -->
+  <div class="container mt-5">
+    <h2 class="mb-4">Cadastro de Filmes 🎥</h2>
+
+    <form id="formFilme">
+
+      <div class="mb-3">
+        <label class="form-label">Título</label>
+        <input type="text" class="form-control" id="titulo" required>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Gênero</label>
+        <input type="text" class="form-control" id="genero" required>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Descrição</label>
+        <textarea class="form-control" id="descricao" required></textarea>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Classificação Indicativa</label>
+        <select class="form-select" id="classificacao" required>
+          <option value="">Selecione</option>
+          <option>Livre</option>
+          <option>10+</option>
+          <option>12+</option>
+          <option>14+</option>
+          <option>16+</option>
+          <option>18+</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Duração (minutos)</label>
+        <input type="number" class="form-control" id="duracao" required>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Data de Estreia</label>
+        <input type="date" class="form-control" id="data" required>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Salvar Filme</button>
+
+    </form>
+  </div>
+
+  <!-- ⚙️ SCRIPT -->
+  <script>
+    document.getElementById("formFilme").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      // 📥 Pegando dados
+      const titulo = document.getElementById("titulo").value;
+      const genero = document.getElementById("genero").value;
+      const descricao = document.getElementById("descricao").value;
+      const classificacao = document.getElementById("classificacao").value;
+      const duracao = document.getElementById("duracao").value;
+      const data = document.getElementById("data").value;
+
+      // 📦 Criando objeto
+      const filme = {
+        titulo,
+        genero,
+        descricao,
+        classificacao,
+        duracao,
+        data
+      };
+
+      // 📚 Pegando filmes já salvos
+      let filmes = JSON.parse(localStorage.getItem("filmes")) || [];
+
+      // ➕ Adicionando novo filme
+      filmes.push(filme);
+
+      // 💾 Salvando
+      localStorage.setItem("filmes", JSON.stringify(filmes));
+
+      // ✅ Feedback
+      alert("Filme cadastrado com sucesso!");
+
+      // 🔄 Limpar formulário
+      document.getElementById("formFilme").reset();
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Cadastro de Salas</title>
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+  <!-- 🔝 MENU -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+      <a class="navbar-brand" href="index.html">🎬 Cinema</a>
+
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="cadastro-filmes.html">Filmes</a></li>
+        <li class="nav-item"><a class="nav-link" href="cadastro-salas.html">Salas</a></li>
+        <li class="nav-item"><a class="nav-link" href="cadastro-sessoes.html">Sessões</a></li>
+        <li class="nav-item"><a class="nav-link" href="venda-ingressos.html">Ingressos</a></li>
+        <li class="nav-item"><a class="nav-link" href="sessoes.html">Listagem</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- 📋 FORMULÁRIO -->
+  <div class="container mt-5">
+    <h2 class="mb-4">Cadastro de Salas 🏢</h2>
+
+    <form id="formSala">
+
+      <div class="mb-3">
+        <label class="form-label">Nome da Sala</label>
+        <input type="text" class="form-control" id="nome" required>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Capacidade</label>
+        <input type="number" class="form-control" id="capacidade" required>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Tipo</label>
+        <select class="form-select" id="tipo" required>
+          <option value="">Selecione</option>
+          <option>2D</option>
+          <option>3D</option>
+          <option>IMAX</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Salvar Sala</button>
+
+    </form>
+  </div>
+
+  <!-- ⚙️ SCRIPT -->
+  <script>
+    document.getElementById("formSala").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      // 📥 Pegando dados
+      const nome = document.getElementById("nome").value;
+      const capacidade = document.getElementById("capacidade").value;
+      const tipo = document.getElementById("tipo").value;
+
+      // 📦 Criando objeto
+      const sala = {
+        nome,
+        capacidade,
+        tipo
+      };
+
+      // 📚 Pegando salas já salvas
+      let salas = JSON.parse(localStorage.getItem("salas")) || [];
+
+      // ➕ Adicionando nova sala
+      salas.push(sala);
+
+      // 💾 Salvando
+      localStorage.setItem("salas", JSON.stringify(salas));
+
+      // ✅ Feedback
+      alert("Sala cadastrada com sucesso!");
+
+      // 🔄 Limpar formulário
+      document.getElementById("formSala").reset();
+    });
+  </script>
+
+</body>
+</html>
