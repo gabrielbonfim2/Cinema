@@ -13,7 +13,7 @@
   <!-- 🔝 MENU -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
-      <a class="navbar-brand" href="index.html">🎬 Cinema</a>
+      <a class="navbar-brand" href="index.html">🎬 Cinema assista com qualidade </a>
 
       <ul class="navbar-nav ms-auto">
         <li class="nav-item"><a class="nav-link" href="cadastro-filmes.html">Filmes</a></li>
@@ -72,14 +72,55 @@
       <button type="submit" class="btn btn-primary">Salvar Filme</button>
 
     </form>
+
+    <!-- 🎬 LISTA DE FILMES -->
+    <h3 class="mt-5">Filmes Cadastrados 🎬</h3>
+
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Título</th>
+          <th>Gênero</th>
+          <th>Duração</th>
+          <th>Classificação</th>
+        </tr>
+      </thead>
+      <tbody id="listaFilmes"></tbody>
+    </table>
+
   </div>
 
   <!-- ⚙️ SCRIPT -->
   <script>
+
+    function carregarFilmes() {
+      let filmes = JSON.parse(localStorage.getItem("filmes")) || [];
+
+      let tabela = document.getElementById("listaFilmes");
+      tabela.innerHTML = "";
+
+      if (filmes.length === 0) {
+        tabela.innerHTML = "<tr><td colspan='4'>Nenhum filme cadastrado</td></tr>";
+        return;
+      }
+
+      filmes.forEach((filme) => {
+        let linha = `
+          <tr>
+            <td>${filme.titulo}</td>
+            <td>${filme.genero}</td>
+            <td>${filme.duracao} min</td>
+            <td>${filme.classificacao}</td>
+          </tr>
+        `;
+
+        tabela.innerHTML += linha;
+      });
+    }
+
     document.getElementById("formFilme").addEventListener("submit", function(e) {
       e.preventDefault();
 
-      // 📥 Pegando dados
       const titulo = document.getElementById("titulo").value;
       const genero = document.getElementById("genero").value;
       const descricao = document.getElementById("descricao").value;
@@ -87,7 +128,6 @@
       const duracao = document.getElementById("duracao").value;
       const data = document.getElementById("data").value;
 
-      // 📦 Criando objeto
       const filme = {
         titulo,
         genero,
@@ -97,21 +137,23 @@
         data
       };
 
-      // 📚 Pegando filmes já salvos
       let filmes = JSON.parse(localStorage.getItem("filmes")) || [];
 
-      // ➕ Adicionando novo filme
       filmes.push(filme);
 
-      // 💾 Salvando
       localStorage.setItem("filmes", JSON.stringify(filmes));
 
-      // ✅ Feedback
       alert("Filme cadastrado com sucesso!");
 
-      // 🔄 Limpar formulário
       document.getElementById("formFilme").reset();
+
+      // 🔄 Atualiza lista automaticamente
+      carregarFilmes();
     });
+
+    // 🚀 Carrega ao abrir página
+    carregarFilmes();
+
   </script>
 
 </body>
