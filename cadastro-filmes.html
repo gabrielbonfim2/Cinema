@@ -14,7 +14,7 @@
   <!-- 🔝 MENU -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
-      <a class="navbar-brand" href="index.html">🎬 Assista com qualidade </a>
+      <a class="navbar-brand" href="index.html">🎬 Cinema RapiDEX </a>
 
       <ul class="navbar-nav ms-auto">
         <li class="nav-item"><a class="nav-link" href="cadastro-filmes.html">Filmes</a></li>
@@ -84,6 +84,7 @@
           <th>Gênero</th>
           <th>Duração</th>
           <th>Classificação</th>
+          <th>Ações</th>
         </tr>
       </thead>
       <tbody id="listaFilmes"></tbody>
@@ -101,22 +102,37 @@
       tabela.innerHTML = "";
 
       if (filmes.length === 0) {
-        tabela.innerHTML = "<tr><td colspan='4'>Nenhum filme cadastrado</td></tr>";
+        tabela.innerHTML = "<tr><td colspan='5'>Nenhum filme cadastrado</td></tr>";
         return;
       }
 
-      filmes.forEach((filme) => {
+      filmes.forEach((filme, index) => {
         let linha = `
           <tr>
             <td>${filme.titulo}</td>
             <td>${filme.genero}</td>
             <td>${filme.duracao} min</td>
             <td>${filme.classificacao}</td>
+            <td>
+              <button class="btn btn-danger btn-sm" onclick="excluirFilme(${index})">Excluir</button>
+            </td>
           </tr>
         `;
 
         tabela.innerHTML += linha;
       });
+    }
+
+    function excluirFilme(index) {
+      let filmes = JSON.parse(localStorage.getItem("filmes")) || [];
+
+      if (!confirm("Tem certeza que deseja excluir este filme?")) return;
+
+      filmes.splice(index, 1);
+
+      localStorage.setItem("filmes", JSON.stringify(filmes));
+
+      carregarFilmes();
     }
 
     document.getElementById("formFilme").addEventListener("submit", function(e) {
@@ -146,13 +162,11 @@
 
       alert("Filme cadastrado com sucesso!");
 
-      document.getElementById("formFilme").reset();
+      this.reset();
 
-      // 🔄 Atualiza lista automaticamente
       carregarFilmes();
     });
 
-    // 🚀 Carrega ao abrir página
     carregarFilmes();
 
   </script>
