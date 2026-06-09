@@ -3,20 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <title>Venda de Ingressos</title>
-
-  <!-- Bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
-
+  <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
-
-  <!-- 🔝 MENU -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
-      <a class="navbar-brand" href="index.html">🎬 Cinema RapiDEX </a>
-
+      <a class="navbar-brand" href="index.html">🎬 Cinema RapiDEX</a>
       <ul class="navbar-nav ms-auto">
         <li class="nav-item"><a class="nav-link" href="cadastro-filmes.html">Filmes</a></li>
         <li class="nav-item"><a class="nav-link" href="cadastro-salas.html">Salas</a></li>
@@ -27,102 +20,77 @@
     </div>
   </nav>
 
-  <!-- 📋 FORMULÁRIO -->
   <div class="container mt-5">
     <h2 class="mb-4">Venda de Ingressos 💳</h2>
-
     <form id="formIngresso">
-
       <div class="mb-3">
         <label class="form-label">Sessão</label>
-        <select class="form-select" id="sessao" required></select>
+        <select class="form-select" id="sessaoId" required></select>
       </div>
-
       <div class="mb-3">
         <label class="form-label">Nome do Cliente</label>
         <input type="text" class="form-control" id="nome" required>
       </div>
-
       <div class="mb-3">
         <label class="form-label">CPF</label>
         <input type="text" class="form-control" id="cpf" required>
       </div>
-
       <div class="mb-3">
         <label class="form-label">Assento</label>
         <input type="text" class="form-control" id="assento" placeholder="Ex: A10" required>
       </div>
-
       <div class="mb-3">
         <label class="form-label">Tipo de Pagamento</label>
         <select class="form-select" id="pagamento" required>
           <option value="">Selecione</option>
-          <option>Cartão</option>
-          <option>Pix</option>
-          <option>Dinheiro</option>
+          <option>Cartão</option><option>Pix</option><option>Dinheiro</option>
         </select>
       </div>
-
       <button type="submit" class="btn btn-primary">Confirmar Venda</button>
-
     </form>
   </div>
 
-  <!-- ⚙️ SCRIPT -->
   <script>
+    const API = 'http://localhost:3000';
 
-    // 🔄 CARREGAR SESSÕES
-    function carregarSessoes() {
-      let sessoes = JSON.parse(localStorage.getItem("sessoes")) || [];
-      let filmes = JSON.parse(localStorage.getItem("filmes")) || [];
-
-      let select = document.getElementById("sessao");
-      select.innerHTML = "<option value=''>Selecione</option>";
-
-      sessoes.forEach((sessao, index) => {
-        let filme = filmes[sessao.filmeId];
-
-        let option = document.createElement("option");
-        option.value = index;
-        option.textContent = `${filme.titulo} - ${sessao.dataHora}`;
-
-        select.appendChild(option);
+    async function carregarSessoes() {
+      const res = await fetch(`${API}/sessoes`);
+      const sessoes = await res.json();
+      const select = document.getElementById('sessaoId');
+      select.innerHTML = "<option value=''>Selecione uma sessão</option>";
+      sessoes.forEach(s => {
+        select.innerHTML += `<option value="${s.id}">${s.filme.titulo} - ${s.dataHora}</option>`;
       });
+
+      // Pré-seleciona se veio da página de sessões
+      const params = new URLSearchParams(window.location.search);
+      const sessaoId = params.get('sessaoId');
+      if (sessaoId) select.value = sessaoId;
     }
 
-    // 📥 SALVAR INGRESSO
-    document.getElementById("formIngresso").addEventListener("submit", function(e) {
+    document.getElementById('formIngresso').addEventListener('submit', async function(e) {
       e.preventDefault();
-
-      const sessaoId = document.getElementById("sessao").value;
-      const nome = document.getElementById("nome").value;
-      const cpf = document.getElementById("cpf").value;
-      const assento = document.getElementById("assento").value;
-      const pagamento = document.getElementById("pagamento").value;
-
-      const ingresso = {
-        sessaoId,
-        nome,
-        cpf,
-        assento,
-        pagamento
+      const body = {
+        sessaoId: Number(document.getElementById('sessaoId').value),
+        nome: document.getElementById('nome').value,
+        cpf: document.getElementById('cpf').value,
+        assento: document.getElementById('assento').value,
+        pagamento: document.getElementById('pagamento').value,
       };
-
-      let ingressos = JSON.parse(localStorage.getItem("ingressos")) || [];
-
-      ingressos.push(ingresso);
-
-      localStorage.setItem("ingressos", JSON.stringify(ingressos));
-
-      alert("Ingresso vendido com sucesso!");
-
-      document.getElementById("formIngresso").reset();
+      const res = await fetch(`${API}/ingressos`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      if (res.ok) {
+        alert('Ingresso vendido com sucesso!');
+        this.reset();
+      } else {
+        alert('Erro ao registrar ingresso.');
+      }
     });
 
-    // 🚀 INICIAR
     carregarSessoes();
-
   </script>
-
 </body>
 </html>
